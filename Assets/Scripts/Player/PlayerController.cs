@@ -10,10 +10,16 @@ public class PlayerController : MonoBehaviour
        [SerializeField] float moveSpeed = 10;
        [SerializeField] float jumpForce = 10;
 
+
+       public float floatThing = 1f;
+       
+       [SerializeField] GameObject gameObject;
+
         float xRotation = 0f;
 
        private void Awake() 
        {
+         Camera cam = FindObjectOfType<Camera>();
           Cursor.lockState = CursorLockMode.Locked;
           Cursor.visible = false;
        }
@@ -25,13 +31,18 @@ public class PlayerController : MonoBehaviour
 
           float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
           xRotation -= mouseY;
+          Debug.Log(Time.deltaTime);
+          Debug.Log("MouseY is: " + mouseY + "xRotation is: " + xRotation);
           xRotation = Mathf.Clamp(xRotation, -80f, 80f);
 
           cam.gameObject.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
 
+          float horizontalMovement = Input.GetAxis("Horizontal") * moveSpeed * Time.deltaTime;
+          float verticalMovement = Input.GetAxis("Vertical") * moveSpeed * Time.deltaTime;
 
-          var horizontalMovement = new Vector3(1, 0, 0) * Input.GetAxis("Horizontal") * moveSpeed * Time.deltaTime;
-          gameObject.transform.localPosition = horizontalMovement;
-
+          Vector3 translation = new Vector3(horizontalMovement, 0f, verticalMovement);
+          transform.Translate(translation);
        }
+
+
 }
