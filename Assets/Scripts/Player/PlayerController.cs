@@ -4,45 +4,94 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-       [SerializeField] Camera cam;
+       [SerializeField] GameObject cam;
        [SerializeField] Rigidbody rb;
        [SerializeField] float mouseSensitivity = 1;
        [SerializeField] float moveSpeed = 10;
        [SerializeField] float jumpForce = 10;
 
-
-       public float floatThing = 1f;
        
-       [SerializeField] GameObject gameObject;
+       public bool controlsActive = true;
+       public bool interactableAvailable = false;
 
-        float xRotation = 0f;
+       private bool interacting = false;
+
+       private Note currentInteractable;
+
+       float xRotation = 0f;
+       float yRotation = 0f;
+
+       float verticalMovement;
+       float horizontalMovement;
 
        private void Awake() 
        {
-         Camera cam = FindObjectOfType<Camera>();
           Cursor.lockState = CursorLockMode.Locked;
           Cursor.visible = false;
        }
 
        private void Update() 
        {
-          var rotationAmount = new Vector3(0, 1, 0) * Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-          gameObject.transform.Rotate(rotationAmount, Space.Self);
+         if (controlsActive)
+         {
+            float mouseX = Input.GetAxisRaw("Mouse X") * mouseSensitivity;
+            float mouseY = Input.GetAxisRaw("Mouse Y") * mouseSensitivity;
+            
+            yRotation += mouseX;
+            xRotation -= mouseY;
 
-          float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
-          xRotation -= mouseY;
-          Debug.Log(Time.deltaTime);
-          Debug.Log("MouseY is: " + mouseY + "xRotation is: " + xRotation);
-          xRotation = Mathf.Clamp(xRotation, -80f, 80f);
+            xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
-          cam.gameObject.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+            cam.transform.localRotation = Quaternion.Euler(xRotation, 0, 0);
+            transform.rotation = Quaternion.Euler(0, yRotation, 0);
 
-          float horizontalMovement = Input.GetAxis("Horizontal") * moveSpeed * Time.deltaTime;
-          float verticalMovement = Input.GetAxis("Vertical") * moveSpeed * Time.deltaTime;
+            horizontalMovement = Input.GetAxisRaw("Horizontal");
+            verticalMovement = Input.GetAxisRaw("Vertical");
+         }
 
-          Vector3 translation = new Vector3(horizontalMovement, 0f, verticalMovement);
-          transform.Translate(translation);
+
+         if (interactableAvailable)
+         {
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+               currentInteractable.Display();
+               interacting = true;
+            }
+         }
+         else
+         {
+            currentInteractable = null;
+         }
+
+         if (interacting)
+         {
+            controlsActive = false;
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+               interacting = false;
+               controlsActive = true;
+               currentInteractable.UnDisplay();
+            }
+         }
        }
 
+
+       private void FixedUpdate() 
+       {
+          rb.AddForce((gameObject.transform.forward * moveSpeed * verticalMovement) + gameObject.transform.right * moveSpeed * horizontalMovement, ForceMode.Force);
+
+          Vector3 flatVelocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+          if(flatVelocity.magnitude > moveSpeed)
+          {
+            Vector3 cappedVelocity = flatVelocity.normalized * moveSpeed;
+            rb.velocity = new Vector3 (cappedVelocity.x, 0f, cappedVelocity.z);
+          }
+       }
+
+
+       public void SetInteractable(Note interactable)
+       {
+         currentInteractable = interactable;
+       }
 
 }
