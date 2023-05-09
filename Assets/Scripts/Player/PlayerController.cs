@@ -78,7 +78,7 @@ public class PlayerController : MonoBehaviour
 
        private void FixedUpdate() 
        {
-          rb.AddForce((gameObject.transform.forward * moveSpeed * verticalMovement) + gameObject.transform.right * moveSpeed * horizontalMovement, ForceMode.Force);
+          rb.AddForce(((gameObject.transform.forward * verticalMovement) + (gameObject.transform.right * horizontalMovement)).normalized * moveSpeed, ForceMode.Force);
 
           Vector3 flatVelocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
           if(flatVelocity.magnitude > moveSpeed)
