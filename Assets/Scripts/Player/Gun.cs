@@ -9,6 +9,8 @@ public class Gun : MonoBehaviour
 
     [SerializeField] float bulletSpeed = 1f;
     [SerializeField] float reloadTime = 1f;
+
+    [SerializeField] Animator animator;
     
     bool bulletLoaded = true;
 
@@ -22,10 +24,17 @@ public class Gun : MonoBehaviour
         }    
     }
 
+    private void LoadBullet()
+    {
+        bulletLoaded = true;
+    }
+
     private void ShootBullet()
     {
+        animator.Play("Shoot");
         var bulletInstance = Instantiate(bulletPrefab, shootPoint.transform.position, shootPoint.transform.rotation);
         Rigidbody bulletRb = bulletInstance.GetComponent<Rigidbody>();
-        bulletRb.AddForce(gameObject.transform.up * bulletSpeed, ForceMode.Impulse);
+        bulletRb.AddForce(gameObject.transform.right * bulletSpeed, ForceMode.Impulse);
+        bulletLoaded = false;
     }
 }
