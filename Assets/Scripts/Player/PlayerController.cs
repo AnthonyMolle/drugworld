@@ -4,39 +4,40 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-       [SerializeField] GameObject cam;
-       [SerializeField] Rigidbody rb;
-       [SerializeField] float mouseSensitivity = 1;
-       [SerializeField] float moveSpeed = 10;
-       [SerializeField] float jumpForce = 10;
+    [SerializeField] GameObject cam;
+    [SerializeField] Rigidbody rb;
+    [SerializeField] float mouseSensitivity = 1;
+    [SerializeField] float moveSpeed = 10;
+    [SerializeField] float acceleration = 100;
+    [SerializeField] float jumpForce = 10;
 
-       
-       public bool controlsActive = true;
-       public bool interactableAvailable = false;
 
-       private bool interacting = false;
+    public bool controlsActive = true;
+    public bool interactableAvailable = false;
 
-       private Note currentInteractable;
+    private bool interacting = false;
 
-       float xRotation = 0f;
-       float yRotation = 0f;
+    private Note currentInteractable;
 
-       float verticalMovement;
-       float horizontalMovement;
+    float xRotation = 0f;
+    float yRotation = 0f;
 
-       private void Awake() 
-       {
-          Cursor.visible = false;
-          Cursor.lockState = CursorLockMode.Locked;
-       }
+    float verticalMovement;
+    float horizontalMovement;
 
-       private void Update() 
-       {
-         if (controlsActive)
-         {
+    private void Awake()
+    {
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    private void Update()
+    {
+        if (controlsActive)
+        {
             float mouseX = Input.GetAxisRaw("Mouse X") * mouseSensitivity;
             float mouseY = Input.GetAxisRaw("Mouse Y") * mouseSensitivity;
-            
+
             yRotation += mouseX;
             xRotation -= mouseY;
 
@@ -47,51 +48,51 @@ public class PlayerController : MonoBehaviour
 
             horizontalMovement = Input.GetAxisRaw("Horizontal");
             verticalMovement = Input.GetAxisRaw("Vertical");
-         }
+        }
 
 
-         if (interactableAvailable)
-         {
+        if (interactableAvailable)
+        {
             if (Input.GetKeyDown(KeyCode.E))
             {
-               currentInteractable.Display();
-               interacting = true;
+                currentInteractable.Display();
+                interacting = true;
             }
-         }
-         else
-         {
+        }
+        else
+        {
             currentInteractable = null;
-         }
+        }
 
-         if (interacting)
-         {
+        if (interacting)
+        {
             controlsActive = false;
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-               interacting = false;
-               controlsActive = true;
-               currentInteractable.UnDisplay();
+                interacting = false;
+                controlsActive = true;
+                currentInteractable.UnDisplay();
             }
-         }
-       }
+        }
+    }
 
 
-       private void FixedUpdate() 
-       {
-          rb.AddForce(((gameObject.transform.forward * verticalMovement) + (gameObject.transform.right * horizontalMovement)).normalized * moveSpeed, ForceMode.Force);
+    private void FixedUpdate()
+    {
+        rb.AddForce(((gameObject.transform.forward * verticalMovement) + (gameObject.transform.right * horizontalMovement)).normalized * acceleration, ForceMode.Force);
 
-          Vector3 flatVelocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-          if(flatVelocity.magnitude > moveSpeed)
-          {
+        Vector3 flatVelocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        if (flatVelocity.magnitude > moveSpeed)
+        {
             Vector3 cappedVelocity = flatVelocity.normalized * moveSpeed;
-            rb.velocity = new Vector3 (cappedVelocity.x, 0f, cappedVelocity.z);
-          }
-       }
+            rb.velocity = new Vector3(cappedVelocity.x, 0f, cappedVelocity.z);
+        }
+    }
 
 
-       public void SetInteractable(Note interactable)
-       {
-         currentInteractable = interactable;
-       }
+    public void SetInteractable(Note interactable)
+    {
+        currentInteractable = interactable;
+    }
 
 }
