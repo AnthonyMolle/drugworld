@@ -27,10 +27,12 @@ public class ViewDetector : MonoBehaviour
         frustrum = GeometryUtility.CalculateFrustumPlanes(mainCam);
         if (GeometryUtility.TestPlanesAABB(frustrum, bounds) && !inView)
         {
+            Debug.Log(gameObject.name + "is in view");
             inView = true;
         }
         else if (!GeometryUtility.TestPlanesAABB(frustrum, bounds) && inView)
         {
+            Debug.Log(gameObject.name + "is out of view");
             inView = false;
         }
     }
