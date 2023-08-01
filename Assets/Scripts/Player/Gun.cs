@@ -13,12 +13,19 @@ public class Gun : MonoBehaviour
     [SerializeField] Animator animator;
     
     bool bulletLoaded = true;
+    bool puttingAway = false;
 
     [SerializeField] int ammo = 10;
 
+    public void PutAway()
+    {
+        puttingAway = true;
+        animator.Play("PutAway");
+    }
+
     private void Update() 
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0) && bulletLoaded)
+        if (Input.GetKeyDown(KeyCode.Mouse0) && bulletLoaded && !puttingAway)
         {   
             ShootBullet();
         }    
@@ -36,5 +43,10 @@ public class Gun : MonoBehaviour
         Rigidbody bulletRb = bulletInstance.GetComponent<Rigidbody>();
         bulletRb.AddForce(gameObject.transform.right * bulletSpeed, ForceMode.Impulse);
         bulletLoaded = false;
+    }
+
+    private void DeactivateGun()
+    {
+        gameObject.SetActive(false);
     }
 }

@@ -70,10 +70,11 @@ public class TransitionManager : MonoBehaviour
 
     private void OnTriggerEnter(Collider other) 
     {
-        if (other.gameObject.GetComponent<PlayerController>() != null)
+        if (other.gameObject.GetComponent<PlayerController>() != null && transitionStarted == false)
         {
             transitionStarted = true;
             door.Close();
+            FindObjectOfType<Gun>().PutAway();
         }    
     }
 
