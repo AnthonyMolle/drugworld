@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4334067804532804315}
   - component: {fileID: 6329562372584727979}
   - component: {fileID: 5782276944759319216}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Water Splash
   m_TagString: Untagged
   m_Icon: {fileID: 0}

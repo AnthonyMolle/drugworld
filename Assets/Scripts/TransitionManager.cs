@@ -54,6 +54,8 @@ public class TransitionManager : MonoBehaviour
         sun.gameObject.SetActive(false);
 
         mainCam.cullingMask = transitionMask;
+
+        
         //for now, test with set active, but later, make sure to give the gingerbread house its own layer, and to remove the roof, body, and level from the main cams culling mask
         //but not the culling mask of the mirror. then have a separate trigger later to deactivate the outer level on to avoid wonky collision on the rocks
 
@@ -62,6 +64,7 @@ public class TransitionManager : MonoBehaviour
 
     public void SwapWall()
     {
+        RenderSettings.fog = true;
         mainCam.cullingMask = closingMask;
         openingLevel.SetActive(false);
         gameObject.SetActive(false);
